@@ -1,0 +1,33 @@
+extract:
+  base_url: https://developer.nps.gov/api/v1
+  endpoints:
+    - parks
+    - activities
+    # - alerts
+    # - campgrounds
+    # - events
+    # - feepassess
+    # - parkinglots
+    # - places
+    # - topics
+    # - thingstodo
+    # - visitorcenters
+    # - tours
+  out_path: /opt/airflow/data/
+  state_codes: 
+    - ca
+    - ut
+    - co 
+    - az
+    - wa
+  api_conn_id: nps_api
+
+upload:
+  s3_folder_prefix: "nps_data/raw"
+  s3_conn_id: "aws_s3"
+  s3_bucket: "parksdata"
+
+load:
+  stage_name: "RAW"
+  file_pattern: ".*\\.jsonl"
+  snowflake_conn_id: snowflake_default
