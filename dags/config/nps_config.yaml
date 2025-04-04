@@ -3,16 +3,16 @@ extract:
   endpoints:
     - parks
     - activities
-    # - alerts
-    # - campgrounds
-    # - events
-    # - feepassess
-    # - parkinglots
-    # - places
-    # - topics
-    # - thingstodo
-    # - visitorcenters
-    # - tours
+    - alerts
+    - campgrounds
+    - events
+    - feepassess
+    - parkinglots
+    - places
+    - topics
+    - thingstodo
+    - visitorcenters
+    - tours
   out_path: /opt/airflow/data/
   state_codes: 
     - ca

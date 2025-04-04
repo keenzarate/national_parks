@@ -1,0 +1,15 @@
+# Airflow
+.env
+logs/
+__pycache__/
+*.pyc
+*.db
+*.log
+
+# Mac system files
+.DS_Store
+
+# Docker files (optional, if you create volumes or temp stuff)
+docker-compose.override.yml
+docker-compose.yaml
+.env
