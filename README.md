@@ -1,4 +1,4 @@
-Building a Scalable Data Pipeline with Airflow, Snowflake, and DBT for the U.S. National Parks API
+# Building a Scalable Data Pipeline with Airflow, Snowflake, and DBT for the U.S. National Parks API
 
 # Introduction
 
