@@ -1,33 +1,27 @@
 Building a Scalable Data Pipeline with Airflow, Snowflake, and DBT for the U.S. National Parks API
 
-✨ Introduction
+# Introduction
 
 I built this project as a portfolio piece to demonstrate how to design and deploy a production-style data pipeline using modern tools and engineering best practices. My goal was to build something that mirrors real-world architecture: containerized, modular, and automatable. The project ingests open data from the U.S. National Parks Service API, transforms it using DBT, and stores it in Snowflake. Everything is orchestrated using Airflow inside Docker containers and deployed to an EC2 instance for long-term operation.
 
-This blog is designed for:
+This document is designed for:
 
-Data engineers looking to learn orchestration and modeling using public APIs
+1. Data engineers looking to learn orchestration and modeling using public APIs
+2. Analysts transitioning to analytics engineering roles
+3. Anyone looking for a guided breakdown of building a robust ETL pipeline from scratch
 
-Analysts transitioning to analytics engineering roles
-
-Anyone looking for a guided breakdown of building a robust ETL pipeline from scratch
-
-🛠 Getting Started
+# Getting Started
 
 Here’s what you’ll need to follow along:
-
-Python 3.9+
-
-Docker & Docker Compose
-
-A free Snowflake trial account
-
-Basic understanding of SQL and Python
-
-Familiarity with terminal/CLI and Git
+- Python 3.9+
+- Docker & Docker Compose
+- A free Snowflake trial account
+- Basic understanding of SQL and Python
+- Familiarity with terminal/CLI and Git
 
 Folder Structure
 
+```bash
 national_parks/
 ├── dags/
 ├── data/
@@ -42,14 +36,14 @@ national_parks/
 ├── config/
 │   └── nps_config.yaml
 └── plugins/
+```
 
-Step-by-Step Setup Guide
+# Step-by-Step Setup Guide
 
-Step 0.5: Set Up Airflow Connections
+## Step 0.5: Set Up Airflow Connections
 Before running your pipeline, make sure you’ve added the following connections in the Airflow UI under Admin > Connections:
-
-AWS S3
-
+- AWS S3
+```
 Conn Id: aws_default
 
 Conn Type: Amazon Web Services
@@ -59,9 +53,9 @@ Login: (your Access Key ID)
 Password: (your Secret Access Key)
 
 Extra: { "region_name": "us-east-1" }
-
-NPS API
-
+```
+- NPS API
+```
 Conn Id: nps_api
 
 Conn Type: HTTP
@@ -71,9 +65,9 @@ Host: https://developer.nps.gov/api/v1
 Password: (API Key here)
 
 Extra: {}
-
-Snowflake
-
+```
+- Snowflake
+```
 Conn Id: snowflake_default
 
 Conn Type: Snowflake
@@ -91,22 +85,19 @@ Warehouse: compute_wh
 Schema: raw
 
 Role: your_role
-
+```
 [Screenshot placeholder: Airflow Connections list]
 
-Step 0: Set Up Your AWS S3 Bucket
+## Step 0: Set Up Your AWS S3 Bucket
 Before running the DAG, you need an S3 bucket to stage your extracted data. Here’s how to set it up:
 
-Go to the AWS Console → S3 → Create Bucket
+1. Go to the AWS Console → S3 → Create Bucket
+2. Give your bucket a unique name like `nps-pipeline-staging`
+3. Enable default settings (you can adjust versioning or public access later if needed)
+4. Under Permissions, make sure your IAM user or role has access to upload/download files
 
-Give your bucket a unique name like nps-pipeline-staging
-
-Enable default settings (you can adjust versioning or public access later if needed)
-
-Under Permissions, make sure your IAM user or role has access to upload/download files
-
-✅ Example IAM Policy:
-
+**Example IAM Policy:**
+```
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -125,47 +116,50 @@ Under Permissions, make sure your IAM user or role has access to upload/download
     }
   ]
 }
-
+```
 🖼️ [Screenshot placeholder: S3 bucket in AWS Console]
 
-In Airflow, create a connection of type Amazon S3 with your Access Key ID and Secret Key, and name the connection something like aws_default.
+In Airflow, create a connection of type Amazon S3 with your **Access Key ID** and **Secret Key**, and name the connection something like `aws_default`.
 
 🖼️ [Screenshot placeholder: Airflow S3 connection setup]
-Step 1: Clone the Repository
+## Step 1: Clone the Repository
 
+```bash
 git clone https://github.com/yourusername/national_parks.git
 cd national_parks
+```
 
-Step 2: Create Your .env File
+## Step 2: Create Your .env File
 This file contains environment-specific configs (e.g., API keys, connection IDs).
-
+```bash
 touch .env
+```
 # Add AIRFLOW_UID and any other secrets you want to parameterize
 
-Step 3: Set Up Docker and Airflow
+## Step 3: Set Up Docker and Airflow
 Start Airflow with Docker Compose:
-
+``` bash
 docker-compose up airflow-init
-
+```
 Then launch the full environment:
-
+```bash
 docker-compose up
-
+```
 🖼️ [Screenshot placeholder: Airflow UI running locally]
 
-Step 4: Verify Volume Mounts
-Check that folders like dags/, logs/, and data/ are correctly mounted inside the container:
-
+## Step 4: Verify Volume Mounts
+Check that folders like `dags/`, `logs/`, and `data/` are correctly mounted inside the container:
+```bash
 volumes:
   - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
   - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
   - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
-
+```
 🖼️ [Screenshot placeholder: Docker logs showing successful sync]
 
-Step 5: Configure Snowflake in DBT
-Create a ~/.dbt/profiles.yml with your Snowflake connection:
-
+## Step 5: Configure Snowflake in DBT
+Create a `~/.dbt/profiles.yml` with your Snowflake connection:
+```yml
 national_parks:
   target: dev
   outputs:
@@ -180,103 +174,82 @@ national_parks:
       schema: raw
       threads: 1
       client_session_keep_alive: False
-
+```
 🖼️ [Screenshot placeholder: Example DBT connection test]
 
-Step 6: Test Locally
+## Step 6: Test Locally
 Manually trigger your DAG in the Airflow UI and check:
 
-Logs are created
-
-Files land in S3
-
-Snowflake receives records
-
-DBT models build successfully
+1. Logs are created
+2. Files land in S3
+3. Snowflake receives records
+4. DBT models build successfully
 
 🖼️ [Screenshot placeholder: DAG graph view with green tasks]
 
-Step 7: (Optional) Move to EC2
+## Step 7: (Optional) Move to EC2
 Once everything works locally, SSH into your EC2 instance and:
 
-Copy your repo
-
-Install Docker & Docker Compose
+1. Copy your repo
+2. Install Docker & Docker Compose
 
 Rerun the same steps in the cloud
 🖼️ [Screenshot placeholder: EC2 terminal with pipeline running]
 
 We'll walk through how each of these components ties together in the sections below.
 
-🧩 Airflow DAG Design
+# Airflow DAG Design
 
 Each state has its own Airflow DAG, and within each DAG, we loop through multiple NPS API endpoints like activities, alerts, campgrounds, etc. This dynamic structure keeps the pipeline modular and scalable.
 
 DAG Structure per State:
-
+```
 nps_pipeline_dag_<state>
 ├── extract_<endpoint>
 ├── upload_to_s3_<endpoint>
 ├── copy_from_s3_to_snowflake_<endpoint>
 └── cleanup_local_files_<endpoint>
+```
+## Key Features:
 
-Key Features:
-
-DAGs are dynamically generated per state using Python for-loop logic.
-
-Each endpoint goes through a 4-step process: extract → upload → load → cleanup.
-
-Parameters like the endpoint, state, and execution date (ds_nodash) are passed into each task using op_kwargs.
-
-Tasks are connected using >> for clear linear dependencies.
+- DAGs are dynamically generated per state using Python for-loop logic.
+- Each endpoint goes through a 4-step process: extract → upload → load → cleanup.
 
 🖼️ [Screenshot placeholder: Airflow DAG graph view for one state]
 
-Task Roles:
+## Task Roles:
 
-extract: Uses PythonOperator to hit the NPS API and store the response in a local JSONL file
+1. `extract`: Uses PythonOperator to hit the NPS API and store the response in a local JSONL file
+2. `upload_to_s3`: Pushes JSONL files to S3 using the S3Hook
+3. `copy_from_s3_to_snowflake`: Uses SnowflakeOperator to run a `COPY INTO` query
+4. `cleanup_local_files`: Removes the local temp files after load
 
-upload_to_s3: Pushes JSONL files to S3 using the S3Hook
-
-copy_from_s3_to_snowflake: Uses SnowflakeOperator to run a COPY INTO query
-
-cleanup_local_files: Removes the local temp files after load
-
-DAG Triggering:
+## DAG Triggering:
 
 All DAGs are triggered manually or on a schedule (e.g., daily)
 
-A future dbt_dag is set to run only after all DAGs complete, ensuring raw data is available for transformation
+A future `dbt_dag` is set to run only after all DAGs complete, ensuring raw data is available for transformation
 
 🖼️ [Screenshot placeholder: example Airflow code for dynamic DAG loop]
 
-🧊 Snowflake Table Setup & COPY Logic
+# Snowflake Table Setup & COPY Logic
 
-After data is uploaded to S3, it’s copied into Snowflake using the SnowflakeOperator. Each table in Snowflake is designed to store the raw response (v), a state identifier, and partitioning metadata.
+After data is uploaded to S3, it’s copied into Snowflake using the `SnowflakeOperator`. Each table in Snowflake is designed to store the raw response (v).
 
-Table Schema
+### Table Schema
 
 All raw tables follow this structure:
 
+```sql
 CREATE TABLE nps_warehouse.raw.activities (
     state_code VARCHAR,
     v VARIANT,
     timestamp TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP,
     load_date VARCHAR
 );
-
-This structure allows:
-
-Easy ingestion of JSON via the VARIANT column
-
-Partitioning by load_date
-
-Filtering by state_code
-
-COPY INTO Logic
-
+```
 Each Airflow task uses a templated SQL string like this:
-
+```sql 
 -- Delete old records for this state + date
 DELETE FROM activities
 WHERE load_date = '20250330' AND state_code = 'az';
@@ -294,23 +267,22 @@ FROM (
 )
 FILE_FORMAT = (TYPE = 'JSON')
 PATTERN = '.*\.jsonl';
+```
 
-Considerations
+# Considerations
 
-The delete step ensures fresh loads per state per day, avoiding duplicates.
-
-Using VARIANT supports semi-structured JSON for flexibility.
-
-A future enhancement could detect changes and skip load if data is identical.
+1. The delete step ensures fresh loads per state per day, avoiding duplicates.
+2. Using `VARIANT` supports semi-structured JSON for flexibility.
+3. A future enhancement could detect changes and skip load if data is identical.
 
 🖼️ [Screenshot placeholder: Snowflake table preview with JSON data]
 
-🧱 DBT Project Structure
+# DBT Project Structure
 
-With raw data loaded into Snowflake, DBT takes over for cleaning, flattening, and modeling.
+With raw data loaded into Snowflake, DBT takes over the transformation step.
 
 Project Layers
-
+```bash
 models/
 ├── base/
 │   └── base_activities.sql
@@ -319,11 +291,11 @@ models/
 └── marts/
     ├── dim/
     └── fct/
-
+```
 1. Base Models
 
 Base models flatten the raw JSON into columns:
-
+``` sql
 SELECT
   state_code,
   v:activity_id::STRING AS activity_id,
@@ -331,56 +303,42 @@ SELECT
   timestamp,
   load_date
 FROM {{ source('raw', 'activities') }}
-
+```
 2. Staging Models
 
 Staging adds cleaned fields, filters, and primary keys:
-
+``` sql
 SELECT *,
   CONCAT_WS('-', state_code, activity_id) AS activity_pk
 FROM {{ ref('base_activities') }}
-
+```
 3. Marts
 
 In marts/, we join, aggregate, or pivot the cleaned data for analytics or dashboards.
 
-DBT Testing
+# DBT Testing
 
 We use schema.yml files to define:
 
-Column tests (e.g., not_null, unique)
-
-Model descriptions
-
-Freshness and source declarations
+    - Column tests (e.g., `not_null`, `unique`)
+    - Model descriptions
+    - Source declarations
 
 🖼️ [Screenshot placeholder: DBT lineage graph]
 
-⛓️ Orchestrating DBT in Airflow
+# Orchestrating DBT in Airflow
 
-A dedicated dbt_dag runs only after all DAGs complete using ExternalTaskSensor.
+A dedicated `dbt_dag` runs only after all DAGs complete.
 
-Flow:
-
-Sensors wait for completion flags (e.g., a dummy raw_complete task).
-
-Once satisfied, DBT is triggered using BashOperator or KubernetesPodOperator.
-
-Steps include:
-
-dbt run
-
-dbt test
-
-dbt docs generate
-
-Command Example:
-
-cd /opt/airflow/dbt_project && dbt run --profiles-dir /root/.dbt
+Tasks include:
+   - dbt run
+   - dbt test
+   - dbt docs generate
 
 🖼️ [Screenshot placeholder: Airflow UI showing dbt_dag run]
 
-🐞 Common Issues & Fixes
+# Issues & Fixes
+Below are some issues that I ran into when setting this pipeline up and the relevant fix I made to address the issue
 
 1. DBT Import Errors
 
@@ -401,16 +359,16 @@ Fix: Created a brand-new Snowflake account, ensuring clean setup and permissions
 
 Issue: DAGs and logs weren’t syncing due to Docker misconfig.
 Fix: Updated volume section:
-
+```
 volumes:
   - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
   - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
   - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
-
+```
 5. DBT Project Misplaced
 
 Issue: Ran dbt init outside of the intended folder.
-Fix: Reinitialized inside the project directory and updated dbt_project.yml path.
+Fix: Reinitialized inside the project directory and updated `dbt_project.yml` path.
 
 📸 Final Output and Screenshots
 
@@ -420,21 +378,16 @@ Fix: Reinitialized inside the project directory and updated dbt_project.yml path
 🖼️ [DBT docs lineage graph]
 🖼️ [Terminal view of EC2 instance running pipeline]
 
-🧠 Reflections & Key Takeaways
+# Reflections & Key Takeaways
 
 This project gave me the chance to:
 
-Build modular, reusable ETL pipelines using Airflow and Python
-
-Use DBT for layered modeling and robust testing
-
-Orchestrate pipelines across Docker and EC2
-
-Practice debugging, system setup, and working with real-world APIs
+1. Build modular, reusable ETL pipelines using Airflow and Python
+2. Use DBT for layered modeling and robust testing
+3. Orchestrate pipelines across Docker and EC2
+4. Practice debugging, system setup, and working with real-world APIs
 
 It’s a great starting point for data engineers, analysts, and developers looking to create end-to-end pipelines that are actually deployable in production.
-
-🔗 View Project on GitHub
 
 Let me know if you’d like help replicating or expanding this!
 
