@@ -1,0 +1,9 @@
+- name: stg_parks
+  description: "Clean flattened parks data with surrogate key k_park"
+  columns:
+    - name: k_park
+      tests: [unique, not_null]
+    - name: park_id
+      tests: [not_null]
+    - name: park_code
+    - name: state_code

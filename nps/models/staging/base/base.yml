@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    database: nps_warehouse       # your Snowflake database
+    schema: raw                   # your schema in Snowflake
+    tables:
+      - name: parks             
+      - name: places 
+      - name: campgrounds
+      - name: things_to_do
