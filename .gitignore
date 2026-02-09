@@ -11,6 +11,4 @@ target/
 .DS_Store
 
 # Docker files (optional, if you create volumes or temp stuff)
-docker-compose.override.yml
-docker-compose.yaml
 .env
