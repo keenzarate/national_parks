@@ -86,7 +86,6 @@ Schema: raw
 
 Role: your_role
 ```
-[Screenshot placeholder: Airflow Connections list]
 
 ## Step 0: Set Up Your AWS S3 Bucket
 
@@ -115,11 +114,9 @@ Role: your_role
   ]
 }
 ```
-🖼️ [Screenshot placeholder: S3 bucket in AWS Console]
 
 Add connection to Airflow.
 
-🖼️ [Screenshot placeholder: Airflow S3 connection setup]
 ## Step 1: Clone the Repository
 
 ```bash
@@ -143,7 +140,6 @@ Then launch the full environment:
 ```bash
 docker-compose up
 ```
-🖼️ [Screenshot placeholder: Airflow UI running locally]
 
 ## Step 4: Verify Volume Mounts
 Check that folders like `dags/`, `logs/`, and `data/` are correctly mounted inside the container:
@@ -153,7 +149,6 @@ volumes:
   - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
   - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
 ```
-🖼️ [Screenshot placeholder: Docker logs showing successful sync]
 
 ## Step 5: Configure Snowflake in DBT
 In `~/.dbt/profiles.yml` add your Snowflake/Databricks/etc connection, I am using Snowflake.
@@ -173,7 +168,6 @@ national_parks:
       threads: 1
       client_session_keep_alive: False
 ```
-🖼️ [Screenshot placeholder: Example DBT connection test]
 
 ## Step 6: Test Locally
 Manually trigger your DAG in the Airflow UI and check:
@@ -183,7 +177,6 @@ Manually trigger your DAG in the Airflow UI and check:
 3. Snowflake receives records
 4. DBT models build successfully
 
-🖼️ [Screenshot placeholder: DAG graph view with green tasks]
 
 ## Step 7: (Optional) Move to EC2
 Once everything works locally, SSH into your EC2 instance and:
@@ -192,7 +185,6 @@ Once everything works locally, SSH into your EC2 instance and:
 2. Install Docker & Docker Compose (optional)
 
 Rerun the same steps in the cloud
-🖼️ [Screenshot placeholder: EC2 terminal with pipeline running]
 
 We'll walk through how each of these components ties together in the sections below.
 
@@ -213,7 +205,6 @@ nps_pipeline_dag_<state>
 - DAGs are dynamically generated per state using Python for-loop logic.
 - Each endpoint goes through a 4-step process: extract → upload → load → cleanup.
 
-🖼️ [Screenshot placeholder: Airflow DAG graph view for one state]
 
 ## Task Roles:
 
@@ -228,7 +219,6 @@ All DAGs are triggered manually or on a schedule (e.g., daily)
 
 A future `dbt_dag` is set to run only after all DAGs complete, ensuring raw data is available for transformation
 
-🖼️ [Screenshot placeholder: example Airflow code for dynamic DAG loop]
 
 # Snowflake Table Setup & COPY Logic
 
@@ -272,8 +262,6 @@ PATTERN = '.*\.jsonl';
 1. The delete step ensures fresh loads per state per day, avoiding duplicates.
 2. Using `VARIANT` supports semi-structured JSON for flexibility.
 3. A future enhancement could detect changes and skip load if data is identical.
-
-🖼️ [Screenshot placeholder: Snowflake table preview with JSON data]
 
 # DBT Project Structure
 
@@ -322,8 +310,6 @@ We use schema.yml files to define:
     - Model descriptions
     - Source declarations
 
-🖼️ [Screenshot placeholder: DBT lineage graph]
-
 # Orchestrating DBT in Airflow
 
 A dedicated `dbt_dag` runs only after all DAGs complete.
@@ -332,8 +318,6 @@ Tasks include:
    - dbt run
    - dbt test
    - dbt docs generate
-
-🖼️ [Screenshot placeholder: Airflow UI showing dbt_dag run]
 
 # Issues & Fixes
 Below are some issues that I ran into when setting this pipeline up and the relevant fix I made to address the issue
@@ -368,14 +352,6 @@ volumes:
 Issue: Ran dbt init outside of the intended folder.
 Fix: Reinitialized inside the project directory and updated `dbt_project.yml` path.
 
-📸 Final Output and Screenshots
-
-🖼️ [Airflow UI DAG graph showing extract → load → transform]
-🖼️ [S3 bucket structure with JSONL files]
-🖼️ [Snowflake table preview: raw + staged]
-🖼️ [DBT docs lineage graph]
-🖼️ [Terminal view of EC2 instance running pipeline]
-
 # Reflections & Key Takeaways
 
 This project gave me the chance to:
@@ -389,5 +365,5 @@ It’s a great starting point for data engineers, analysts, and developers looki
 
 Let me know if you’d like help replicating or expanding this!
 
-I had a lot of fun working on this project — from building the pipeline logic to debugging the infrastructure and seeing it all run end-to-end. Thanks for reading!
+I had a lot of fun working on this project from building the pipeline logic to debugging the infrastructure and seeing it all run end-to-end. Thanks for reading!
 
