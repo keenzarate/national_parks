@@ -89,12 +89,10 @@ Role: your_role
 [Screenshot placeholder: Airflow Connections list]
 
 ## Step 0: Set Up Your AWS S3 Bucket
-Before running the DAG, you need an S3 bucket to stage your extracted data. Here’s how to set it up:
 
 1. Go to the AWS Console → S3 → Create Bucket
-2. Give your bucket a unique name like `nps-pipeline-staging`
-3. Enable default settings (you can adjust versioning or public access later if needed)
-4. Under Permissions, make sure your IAM user or role has access to upload/download files
+2. Create a bucket (e.g.`nps-pipeline-staging`)
+4. Update IAM user or role to have access to upload/download files
 
 **Example IAM Policy:**
 ```
@@ -119,7 +117,7 @@ Before running the DAG, you need an S3 bucket to stage your extracted data. Here
 ```
 🖼️ [Screenshot placeholder: S3 bucket in AWS Console]
 
-In Airflow, create a connection of type Amazon S3 with your **Access Key ID** and **Secret Key**, and name the connection something like `aws_default`.
+Add connection to Airflow.
 
 🖼️ [Screenshot placeholder: Airflow S3 connection setup]
 ## Step 1: Clone the Repository
@@ -158,7 +156,7 @@ volumes:
 🖼️ [Screenshot placeholder: Docker logs showing successful sync]
 
 ## Step 5: Configure Snowflake in DBT
-Create a `~/.dbt/profiles.yml` with your Snowflake connection:
+In `~/.dbt/profiles.yml` add your Snowflake/Databricks/etc connection, I am using Snowflake.
 ```yml
 national_parks:
   target: dev
@@ -191,7 +189,7 @@ Manually trigger your DAG in the Airflow UI and check:
 Once everything works locally, SSH into your EC2 instance and:
 
 1. Copy your repo
-2. Install Docker & Docker Compose
+2. Install Docker & Docker Compose (optional)
 
 Rerun the same steps in the cloud
 🖼️ [Screenshot placeholder: EC2 terminal with pipeline running]
