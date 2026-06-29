@@ -1,17 +1,45 @@
 with thingstodo as (
     select *
-    from {{ source('raw', 'things_to_do') }}
+    from {{ source('raw', 'thingstodo') }}
 )
 
 select
+    thingstodo.state_code,
+    thingstodo.timestamp as loaded_at,
     v:"id"::string as thing_id,
     v:"title"::string as title,
     v:"shortDescription"::string as short_description,
     v:"longDescription"::string as long_description,
-    v:"activities"::variant as activities,
-    v:"relatedParks"::variant as related_parks,
+    v:"location"::string as location,
+    v:"locationDescription"::string as location_description,
+    v:"latitude"::string as latitude,
+    v:"longitude"::string as longitude,
+    v:"url"::string as url,
+    v:"credit"::string as credit,
+    v:"geometryPoiId"::string as geometry_poi_id,
+    v:"accessibilityInformation"::string as accessibility_information,
+    v:"age"::string as age,
+    v:"ageDescription"::string as age_description,
+    v:"activityDescription"::string as activity_description,
     v:"duration"::string as duration,
-    v:"durationUnit"::string as duration_unit,
+    v:"durationDescription"::string as duration_description,
+    v:"season"::variant as season,
+    v:"seasonDescription"::string as season_description,
+    v:"timeOfDay"::variant as time_of_day,
+    v:"timeOfDayDescription"::string as time_of_day_description,
+    v:"doFeesApply"::string as do_fees_apply,
+    v:"feeDescription"::string as fee_description,
+    v:"isReservationRequired"::string as is_reservation_required,
+    v:"reservationDescription"::string as reservation_description,
+    v:"arePetsPermitted"::string as are_pets_permitted,
+    v:"arePetsPermittedWithRestrictions"::string as are_pets_permitted_with_restrictions,
+    v:"petsDescription"::string as pets_description,
+    v:"relevanceScore"::float as relevance_score,
+    v:"activities"::variant as activities,
+    v:"topics"::variant as topics,
+    v:"amenities"::variant as amenities,
     v:"images"::variant as images,
-    v:"url"::string as url
+    v:"tags"::variant as tags,
+    v:"relatedOrganizations"::variant as related_organizations,
+    v:"relatedParks"::variant as related_parks
 from thingstodo

@@ -2,10 +2,19 @@ version: 2
 
 sources:
   - name: raw
-    database: nps_warehouse       # your Snowflake database
-    schema: raw                   # your schema in Snowflake
+    description: "Parse out the json object"
+    database: nps_warehouse      
+    schema: raw                 
     tables:
-      - name: parks             
-      - name: places 
+      - name: parks
+      - name: places
       - name: campgrounds
-      - name: things_to_do
+      - name: thingstodo
+      - name: activities
+      - name: alerts
+      - name: events
+      - name: feepassess
+      - name: parkinglots
+      - name: topics
+      - name: tours
+      - name: visitorcenters

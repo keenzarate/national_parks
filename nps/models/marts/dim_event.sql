@@ -1,0 +1,48 @@
+with stg as (
+    select *
+    from {{ ref('stg_events') }}
+)
+
+select
+    stg.k_event,
+    stg.k_park,
+    stg.event_legacy_id,
+    stg.site_type,
+    stg.title,
+    stg.park_full_name,
+    stg.description,
+    stg.category,
+    stg.category_id,
+    stg.types,
+    stg.tags,
+    stg.event_date,
+    stg.date_start,
+    stg.date_end,
+    stg.dates,
+    stg.time_info,
+    stg.times,
+    stg.is_all_day,
+    stg.is_recurring,
+    stg.recurrence_rule,
+    stg.recurrence_date_start,
+    stg.recurrence_date_end,
+    stg.is_free,
+    stg.fee_info,
+    stg.is_registration_required,
+    stg.registration_info,
+    stg.registration_url,
+    stg.location,
+    stg.latitude,
+    stg.longitude,
+    stg.contact_name,
+    stg.contact_email_address,
+    stg.contact_telephone_number,
+    stg.organization_name,
+    stg.portal_name,
+    stg.subject_name,
+    stg.info_url,
+    stg.image_id_list,
+    stg.images,
+    stg.datetime_created,
+    stg.datetime_updated
+from stg

@@ -6,9 +6,20 @@ __pycache__/
 *.db
 *.log
 target/
+airflow.cfg
+airflow-webserver.pid
+standalone_admin_password.txt
+webserver_config.py
 
 # Mac system files
 .DS_Store
 
 # Docker files (optional, if you create volumes or temp stuff)
 .env
+
+# dbt packages (regenerate via `dbt deps` from packages.yml/package-lock.yml)
+dbt_packages/
+
+# Claude Code local session state
+.claude/
+dbt_internal_packages/

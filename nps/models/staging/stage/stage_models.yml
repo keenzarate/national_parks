@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_places
+    columns:
+      - name: k_place
+        tests: [unique, not_null]
+  - name: stg_campgrounds
+    columns:
+      - name: k_campground
+        tests: [unique, not_null]
+  - name: stg_thingstodo
+    columns:
+      - name: k_thing
+        tests: [unique, not_null]
+  - name: stg_alerts
+    columns:
+      - name: k_alert
+        tests: [unique, not_null]
+  - name: stg_visitorcenters
+    columns:
+      - name: k_visitorcenter
+        tests: [unique, not_null]
+  - name: stg_parkinglots
+    columns:
+      - name: k_parkinglot
+        tests: [unique, not_null]
+  - name: stg_tours
+    columns:
+      - name: k_tour
+        tests: [unique, not_null]
+  - name: stg_events
+    columns:
+      - name: k_event
+        tests: [unique, not_null]

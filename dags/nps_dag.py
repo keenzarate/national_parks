@@ -11,7 +11,8 @@ from utils.s3_to_snowflake import upload_files_to_s3, get_copy_sql, cleanup_loca
 
 
 def load_config():
-    with open("/opt/airflow/dags/config/nps_config.yaml", "r") as f:
+    config_path = os.path.join(os.path.dirname(__file__), "config", "nps_config.yaml")
+    with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 default_args = {

@@ -1,0 +1,160 @@
+version: 2
+
+models:
+  - name: dim_park
+    description: "One row per park."
+    columns:
+      - name: k_park
+        tests: [unique, not_null]
+
+  - name: dim_campground
+    description: "One row per campground, owned by a single park (verified: campgrounds carry a singular park_code, not a many-to-many related_parks array)."
+    columns:
+      - name: k_campground
+        tests: [unique, not_null]
+      - name: k_park
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+
+  - name: dim_alert
+    description: "One row per alert, owned by a single park."
+    columns:
+      - name: k_alert
+        tests: [unique, not_null]
+      - name: k_park
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+
+  - name: dim_event
+    description: "One row per event, owned by a single park. Field names verified against a real NPS API payload."
+    columns:
+      - name: k_event
+        tests: [unique, not_null]
+      - name: k_park
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+
+  - name: dim_visitorcenter
+    description: "One row per visitor center, owned by a single park."
+    columns:
+      - name: k_visitorcenter
+        tests: [unique, not_null]
+      - name: k_park
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+
+  - name: dim_tour
+    description: "One row per tour, owned by a single park (verified: tours carry a singular park object, not a many-to-many related_parks array)."
+    columns:
+      - name: k_tour
+        tests: [unique, not_null]
+      - name: k_park
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+
+  - name: dim_place
+    description: "One row per place. Many-to-many with park via dim_park__place (verified: relatedParks is an array)."
+    columns:
+      - name: k_place
+        tests: [unique, not_null]
+
+  - name: dim_thing_to_do
+    description: "One row per thing-to-do. Many-to-many with park via dim_park__thing_to_do (verified: relatedParks is an array)."
+    columns:
+      - name: k_things_to_do
+        tests: [unique, not_null]
+
+  - name: dim_park__activity
+    description: "Park-activity relationship, with activity_id/activity_name denormalized directly (activity has no attributes worth a standalone dimension)."
+    columns:
+      - name: k_park
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+      - name: activity_id
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [k_park, activity_id]
+
+  - name: dim_park__topic
+    description: "Park-topic relationship, with topic_id/topic_name denormalized directly (topic has no attributes worth a standalone dimension)."
+    columns:
+      - name: k_park
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+      - name: topic_id
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [k_park, topic_id]
+
+  - name: dim_park__place
+    description: "Many-to-many link between dim_park and dim_place (pure key bridge, no denormalized attributes)."
+    columns:
+      - name: k_park
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+      - name: k_place
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_place')
+                field: k_place
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [k_park, k_place]
+
+  - name: dim_park__thing_to_do
+    description: "Many-to-many link between dim_park and dim_thing_to_do (pure key bridge, no denormalized attributes)."
+    columns:
+      - name: k_park
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_park')
+                field: k_park
+      - name: k_things_to_do
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_thing_to_do')
+                field: k_things_to_do
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [k_park, k_things_to_do]

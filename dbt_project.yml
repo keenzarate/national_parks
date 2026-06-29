@@ -22,3 +22,6 @@ models:
           +materialized: view
         stage:
           +materialized: table
+      marts:
+        +schema: marts
+        +materialized: table
