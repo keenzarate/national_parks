@@ -330,9 +330,6 @@ Here's a couple screenshots of my local deployment:
 - Tasks
 <img width="1298" height="752" alt="tasks" src="https://github.com/user-attachments/assets/c4544507-561a-4ef1-8c75-e2f81e190291" />
 
-- Snowflake
-<img width="316" height="681" alt="snowflake" src="https://github.com/user-attachments/assets/0d14371e-bc6e-45a7-8c69-cbe481e823f4" />
-
 - RAW counts
 NOTE: I only triggered two states for testing so all other states here have 0 rows
 <img width="1538" height="468" alt="image" src="https://github.com/user-attachments/assets/210f61ad-c50f-4b29-8f5c-aa157e343954" />
@@ -340,6 +337,13 @@ NOTE: I only triggered two states for testing so all other states here have 0 ro
 - Sample data
 <img width="1459" height="973" alt="base_parks" src="https://github.com/user-attachments/assets/1d270cf8-0770-4b03-aa2d-3f9caeed9103" />
 
+## dbt docs overview
+
+<img width="800" height="444" alt="Recording2026-06-30172559-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/1fd58f20-7a40-48c8-8081-419c023d4490" />
+<img width="800" height="444" alt="Recording2026-06-30172559-ezgif com-video-to-gif-converter(1)" src="https://github.com/user-attachments/assets/ff828caa-a916-4d1f-a590-714bd78dfa1c" />
+
+## model lineage
+<img width="800" height="444" alt="Recording2026-06-30172559-ezgif com-video-to-gif-converter(2)" src="https://github.com/user-attachments/assets/3d3cd049-5b6a-4d8d-bc84-881a6fe6a5ff" />
 
 
 ## Issues I ran into
