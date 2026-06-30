@@ -100,7 +100,7 @@ snowflake_default  Snowflake             Account: <org-account>, User/Password, 
 
 ### 5. Set up Snowflake and dbt
 
-Run `database/create_tables.sql` to create the warehouse, database, `raw` schema, the 12 raw landing tables, and the external stage. Then point dbt at Snowflake in `~/.dbt/profiles.yml`:
+Run [`database/create_tables.sql`](https://github.com/keenzarate/national_parks/blob/main/database/create_tables.sql) to create the warehouse, database, `raw` schema, the 12 raw landing tables, and the external stage. Then point dbt at Snowflake in `~/.dbt/profiles.yml`:
 
 ```yml
 national_parks:
