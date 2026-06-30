@@ -5,7 +5,7 @@ An end-to-end batch pipeline that pulls data from the [U.S. National Parks Servi
 ## Architecture
 <img width="1090" height="673" alt="image" src="https://github.com/user-attachments/assets/26740d7d-4649-46dd-8e6d-db0da30a9642" />
 
-One Airflow DAG is generated per state. Each DAG loops over 12 API endpoints and runs a 4-step pipeline per endpoint: **extract -> upload to S3 -> COPY INTO Snowflake -> cleanup local files**.
+One Airflow DAG is generated per state. Each DAG loops over 12 API endpoints and runs a 4-step pipeline per endpoint (you can extend to more states by adjusting the config): **extract -> upload to S3 -> COPY INTO Snowflake -> cleanup local files**.
 
 - **States covered:** `az`, `ca`, `co`, `ut`, `wa`
 - **Endpoints:** `parks`, `activities`, `alerts`, `campgrounds`, `events`, `feepassess`, `parkinglots`, `places`, `topics`, `thingstodo`, `visitorcenters`, `tours`
