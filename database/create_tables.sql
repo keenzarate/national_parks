@@ -1,3 +1,27 @@
+CREATE WAREHOUSE IF NOT EXISTS compute_wh
+    WITH WAREHOUSE_SIZE = 'XSMALL'
+    AUTO_SUSPEND = 60
+    AUTO_RESUME = TRUE
+    INITIALLY_SUSPENDED = TRUE;
+
+-- database + schema for raw landing data
+CREATE DATABASE IF NOT EXISTS nps_warehouse;
+CREATE SCHEMA IF NOT EXISTS nps_warehouse.raw;
+
+-- set context for the rest of this script
+USE WAREHOUSE compute_wh;
+USE DATABASE nps_warehouse;
+USE SCHEMA raw;
+
+USE SCHEMA nps_warehouse.raw;
+
+CREATE STAGE IF NOT EXISTS RAW
+    URL = 's3://parksdata-nps-2026'                        
+    CREDENTIALS = (AWS_KEY_ID = '<your-access-key-id>'
+                   AWS_SECRET_KEY = '<your-secret-access-key>')
+    FILE_FORMAT = (TYPE = 'JSON');
+
+
 CREATE TABLE nps_warehouse.raw.activities (
     state_code VARCHAR,
     v VARIANT,
